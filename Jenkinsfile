@@ -1,18 +1,20 @@
 pipeline {
-    agent {label 'lt-dev'}
+    agent { label 'ltecomm'}
     triggers {
         cron('H * * * 1-5')
     }
     stages {
-        stage('SCM') {
+        stage('scm') {
             steps {
-                git 'https://github.com/wakaleo/game-of-life.git'
-            }
-        stage('Build') {
-            steps {
-                sh 'mvn clean package'
+                git 'https://github.com/wakaleo/game-of-life.git'        
             }
         }
+        stage('build') {
+            steps {
+                sh script: 'mvn clean package'
+            }
+        }
+
         stage('post build') {
             steps {
                 junit 'gameoflife-web/target/surefire-reports/*.xml'
