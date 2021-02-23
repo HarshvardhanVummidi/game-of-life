@@ -1,5 +1,8 @@
 pipeline {
     agent { label 'lt-dev'}
+    options {
+        timeout(time: 15, unit: 'MINUTES')
+    }
     triggers {
         cron('H * * * 1-5')
     }
@@ -22,7 +25,15 @@ pipeline {
             steps {
                 junit 'gameoflife-web/target/surefire-reports/*.xml'
                 archiveArtifacts 'gameoflife-web/target/*.war'
+                stash name: 'warfile', includes: 'gameoflife-web/target/*.war'
 
+            }
+        }
+
+        stage('copy to other node') {
+            agent {label 'devops'}
+            steps {
+                unstash name: 'warfile'
             }
         }
     }
