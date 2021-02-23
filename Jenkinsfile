@@ -3,6 +3,9 @@ pipeline {
     triggers {
         cron('H * * * 1-5')
     }
+    parameters {
+        string(name:'MAVENGOAL',defaultValue:'clean package',description: 'adding parametres for the project')
+    }
     stages {
         stage('scm') {
             steps {
@@ -11,7 +14,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                sh script: 'mvn clean package'
+                sh script: "mvn ${params.MAVENGOAL}"
             }
         }
 
